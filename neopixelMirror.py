@@ -43,7 +43,6 @@ def imageToLED(discreteImageRaw,pixels,colorVal):
     pixelArray=pixelArray.astype(int) # Convert to int
     pixelTuple=[tuple(x) for x in pixelArray] #Convert to correctly dimensioned tuple array
     pixels[:]=pixelTuple
-        
     return pixels
     
 #Parameters
@@ -89,11 +88,10 @@ rawCapture.truncate(0) #Clear buffer for next frame capture
 while 1:
     camera.capture(rawCapture,format="rgb",use_video_port=True) #Capture image
     newImage=rawCapture.array #Retrieve array of captured image as array
-	discretizedImage=discretizeImage(newImageROI,noLevels) #Discretize image and scale values   
+    discretizedImage=discretizeImage(newImageROI,noLevels) #Discretize image and scale values   
     pixels=imageToLED(discretizedImage,pixels,colorVal) #Convert the image to an LED value array and assign them to the string of Neopixels
     pixels.show() #Light up the LEDs
     rawCapture.truncate(0) #Clear stream to prepare for next frame
-	
-	time.sleep(10)
+    time.sleep(10)
 
 camera.close()
