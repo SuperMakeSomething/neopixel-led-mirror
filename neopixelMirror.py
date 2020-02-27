@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Neopixel LED Mirror Code (Neopixel LED Mirror - Super Make Something Episode 20) - https://youtu.be/Ew0HmLy_Td8
+Neopixel LED Mirror Code (Neopixel LED Mirror - Super Make Something Episode 20)
 by: Alex - Super Make Something
 date: November 18, 2019
 license: Creative Commons - Attribution - Non Commercial.  More information at: http://creativecommons.org/licenses/by-nc/3.0/
-description: This script captures images from an attached Raspberry Pi camera and displays it on the Neopixel Mirror
 """
 
 # Import required libraries
@@ -43,6 +42,7 @@ def imageToLED(discreteImageRaw,pixels,colorVal):
     pixelArray=pixelArray.astype(int) # Convert to int
     pixelTuple=[tuple(x) for x in pixelArray] #Convert to correctly dimensioned tuple array
     pixels[:]=pixelTuple
+        
     return pixels
     
 #Parameters
@@ -52,8 +52,11 @@ noLevels=255 #No of LED brightness discretization levels
 numNeopixels_x = 24 #Declare number of Neopixels in grid
 numNeopixels_y = 24
 windowSize=(numNeopixels_x,numNeopixels_y) #Define extracted ROI size
-xCenter=67 #x center location of ROI
-yCenter=75 #y center location of ROI
+xCenter=67#70 #x center location of ROI
+yCenter=75#71 #y center location of ROI
+thresh=50 #Threshold value for background subtraction
+threshLower=0
+threshUpper=200
 
 colorVal=2 #R=0, G=1, B=2
 
@@ -88,10 +91,10 @@ rawCapture.truncate(0) #Clear buffer for next frame capture
 while 1:
     camera.capture(rawCapture,format="rgb",use_video_port=True) #Capture image
     newImage=rawCapture.array #Retrieve array of captured image as array
+    newImageROI = extractROI(newImage,xCenter,yCenter,windowSize) #Extract base image ROI
     discretizedImage=discretizeImage(newImageROI,noLevels) #Discretize image and scale values   
     pixels=imageToLED(discretizedImage,pixels,colorVal) #Convert the image to an LED value array and assign them to the string of Neopixels
     pixels.show() #Light up the LEDs
     rawCapture.truncate(0) #Clear stream to prepare for next frame
-    time.sleep(10)
 
 camera.close()
